@@ -37,10 +37,12 @@ def classification_evaluate_model(model, X_test, y_test, criterion):
 
 # Trains a MLP classification model
 def classification_train_model(model, X_train, y_train, X_test, y_test, epochs, criterion, optimizer):
+    train_losses = []
+    test_losses = []
     for epoch in range(1, epochs + 1):
         # train the model for one epoch
         train_loss = train_one_epoch(model, X_train, y_train, criterion, optimizer)
-
+        train_losses.append(train_loss)
         # print weights and biases every epoch
         weights = model.fc.weight.data
         biases = model.fc.bias.data
@@ -50,7 +52,7 @@ def classification_train_model(model, X_train, y_train, X_test, y_test, epochs, 
         print(f"  Training Loss: {train_loss:.4f}\n")
         if epoch % 5 == 0:
             test_loss, accuracy, precision, recall, f1 = classification_evaluate_model(model, X_test, y_test, criterion)
-
+            test_losses.append(test_loss)
             print(f"  Test Loss       : {test_loss:.4f}\n")
 
         # print evaluation metrics
@@ -61,6 +63,7 @@ def classification_train_model(model, X_train, y_train, X_test, y_test, epochs, 
             print(f"  Recall          : {recall:.4f}")
             print(f"  F1 Score        : {f1:.4f}\n")
             print("-" * 50)
+    return train_losses, test_losses
 
 # Evaluates a MLP model for a regression task
 def regression_evaluate_model(model, X_test, y_test, criterion):
@@ -81,10 +84,12 @@ def regression_evaluate_model(model, X_test, y_test, criterion):
 
 # Trains a MLP regression model
 def regression_train_model(model, X_train, y_train, X_test, y_test, epochs, criterion, optimizer):
+    train_losses = []
+    test_losses = []
     for epoch in range(1, epochs + 1):
         # train the model for one epoch
         train_loss = train_one_epoch(model, X_train, y_train, criterion, optimizer)
-
+        train_losses.append(train_loss)
         # print weights and biases every epoch
         weights = model.fc.weight.data
         biases = model.fc.bias.data
@@ -100,6 +105,7 @@ def regression_train_model(model, X_train, y_train, X_test, y_test, epochs, crit
             test_loss, mse, mae, r2 = regression_evaluate_model(
                 model, X_test, y_test, criterion
             )
+            test_losses.append(test_loss)
             print(f"  Testing Loss: {test_loss:.4f}")
             # print evaluation metrics
             print(f"  Evaluation Metrics".center(50, "-"))
@@ -108,3 +114,4 @@ def regression_train_model(model, X_train, y_train, X_test, y_test, epochs, crit
             print(f"  MAE       : {mae:.4f}")
             print(f"  r2          : {r2:.4f}")
             print("-" * 50)
+    return train_losses, test_losses
